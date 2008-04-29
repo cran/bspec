@@ -39,7 +39,9 @@ dposterior(x, ...)
 }
 \references{Roever, C., Meyer, R., Christensen, N. (2008):
   Modelling coloured noise.
-  (\emph{in preparation}).}
+  Arxiv preprint 0804.3853 [stat.ME],
+  \url{http://arxiv.org/abs/0804.3853},
+  (\emph{submitted for publication}).}
 \author{Christian Roever, \email{bspec@web.de}}
 \seealso{\code{\link[=bspec.default]{bspec}},
   \code{\link[=quantile.bspec]{quantile.bspec}},

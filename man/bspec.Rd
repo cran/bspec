@@ -80,7 +80,9 @@
 }
 \references{Roever, C., Meyer, R., Christensen, N. (2008):
   Modelling coloured noise.
-  (\emph{in preparation}).}
+  Arxiv preprint 0804.3853 [stat.ME],
+  \url{http://arxiv.org/abs/0804.3853},
+  (\emph{submitted for publication}).}
 \author{Christian Roever, \email{bspec@web.de}}
 \seealso{\code{\link[=expectation.bspec]{expectation}},
   \code{\link[=quantile.bspec]{quantile.bspec}},
@@ -127,7 +129,19 @@ plot(spectrum2)
 lines(bspec2$freq, bspec2$scale/bspec2$datadf,
       type="b", col="green", lty="dashed")
 
+########
 
-
+# handle several time series at once...
+data(sunspots)
+# extract three 70-year segments:
+spots1 <- window(sunspots, 1750, 1819.99)
+spots2 <- window(sunspots, 1830, 1899.99)
+spots3 <- window(sunspots, 1910, 1979.99)
+# align their time scales:
+tsp(spots3) <- tsp(spots2) <- tsp(spots1)
+# combine to multivariate time series:
+spots <- ts.union(spots1, spots2, spots3)
+# infer spectrum:
+plot(bspec(spots))
 }
 \keyword{ts}

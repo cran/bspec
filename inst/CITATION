@@ -2,21 +2,24 @@ citEntry(entry  = "manual",
          title  = "bspec: Bayesian spectral inference",
          author = person(first="Christian", last="Roever", email="bspec@web.de"),
          year   = 2008,
-         note   = "R package version 0.1",
+         note   = "R package version 1.1",
          textVersion=paste("Christian Roever (2008).",
                            "bspec: Bayesian spectral inference.",
-                           "R package version 1.0.")
+                           "R package version 1.1.")
         )
 
-citEntry(entry = "article",
+citEntry(entry = "unpublished",
          title = "Modelling coloured noise",
          author = personList(
                     person(first="Christian", last="Roever", email="bspec@web.de"),
                     person(first="Renate", last="Meyer"),
                     person(first="Nelson", last="Christensen")),
          year   = 2008,
-         note   = "in preparation",
+         journal= "Arxiv preprint 0804.3853 [stat.ME], URL http://arxiv.org/abs/0804.3853",
+         note   = "(submitted for publication)",
          textVersion=paste("Roever, C., Meyer, R. and Christensen, N. (2008).",
                            "Modelling coloured noise.",
-                           "(in preparation).")
+                           "Arxiv preprint 0804.3853 [stat.ME],",
+                           "URL http://arxiv.org/abs/0804.3853",
+                           "(submitted for publication).")
         )
