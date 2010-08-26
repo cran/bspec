@@ -14,7 +14,7 @@ ppsample(x, ...)
   \item{x}{a \code{bspec} object specifying the posterior
     distribution from which to sample.}
   \item{start}{the start time of the resulting time series.}
-  \item{...}{}
+  \item{...}{currently unused.}
 }
 \value{
   A time series (\code{ts}) object of the same kind (with respect to

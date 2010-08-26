@@ -36,7 +36,7 @@
     interpretation of the prior scale parameters, and sets the default
     for some methods applied to the resulting \code{bspec} object via
     its \code{two.sided} element.}
-  \item{...}{}
+  \item{...}{currently unused.}
 }
 \details{
   Based on the assumptions of a zero mean and a finite spectrum,

@@ -16,7 +16,7 @@ two.sided(x, ...)
 }
 \arguments{
   \item{x}{a \code{bspec} object.}
-  \item{...}{}
+  \item{...}{currently unused.}
 }
 \details{
   The conversion only means that the \code{$two.sided} element of the

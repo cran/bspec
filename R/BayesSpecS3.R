@@ -3,9 +3,15 @@
 #
 # S3 Version.
 #
-# see:
-#   Roever, C., Meyer, R. and Christensen, N. (2008):
-#   Modelling coloured noise. (in preparation).
+# http://cran.r-project.org/package=bspec
+#
+#
+# see also:
+#
+#   Roever, C., Meyer, R. and Christensen, N. (2010):
+#   Modelling coloured noise.
+#   Arxiv preprint 0804.3853
+#   URL http://arxiv.org/abs/0804.3853
 #
 
 print.bspec <- function(x, ...)

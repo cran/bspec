@@ -16,7 +16,7 @@
   \item{likelihood.only}{a \code{logical} flag indicating whether to
     apply the tempering to the \sQuote{complete} posterior density, or
     to the likelihood only (default).}
-  \item{...}{}
+  \item{...}{currently unused.}
 }
 \details{
   In the context of Markov chain Monte Carlo (MCMC) applications it is

@@ -27,7 +27,7 @@ dposterior(x, ...)
     \emph{two-sided} spectrum.}
   \item{log}{a \code{logical} flag indicating whether to return
     logarithmic density (or likelihood) values.}
-  \item{...}{}
+  \item{...}{currently unused.}
 }
 \details{
   Prior and posterior are both \emph{scaled inverse

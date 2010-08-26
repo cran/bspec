@@ -25,7 +25,7 @@
   \item{two.sided}{a \code{logical} flag indicating whether the
     \code{spec} values are to be interpreted as \emph{one-sided} or
     \emph{two-sided}.}
-  \item{...}{}
+  \item{...}{currently unused.}
 }
 \details{
   If \code{spec} is supplied, the autocovariance (or autocorrelation)

@@ -24,7 +24,7 @@
   \item{two.sided}{A \code{logical} flag to indicate whether to compute
     expectation / variance of one- or two-sided spectrum, \emph{if}
     the argument \code{x} is a \code{bspec} object.}
-  \item{...}{}
+  \item{...}{currently unused.}
 }
 \value{
   A \code{numeric} vector giving the expectations/variances

@@ -16,7 +16,7 @@
   \item{two.sided}{a \code{logical} flag indicating whether quantiles
     are supposed to correspond to the \emph{one-sided} or
     \emph{two-sided} spectrum.}
-  \item{...}{}
+  \item{...}{currently unused.}
 }
 \details{
   The posterior distribution is a product of independent \emph{scaled inverse

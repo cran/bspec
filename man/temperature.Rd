@@ -12,7 +12,7 @@
 }
 \arguments{
   \item{x}{a \code{bspec} object.}
-  \item{...}{}
+  \item{...}{currently unused.}
 }
 \value{
   The (\code{numeric}) value of the \code{temperature} element of the
