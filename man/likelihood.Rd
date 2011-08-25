@@ -1,21 +1,26 @@
 \name{likelihood}
 \alias{dprior}
 \alias{likelihood}
+\alias{marglikelihood}
 \alias{dposterior}
 \alias{dprior.bspec}
 \alias{likelihood.bspec}
+\alias{marglikelihood.bspec}
 \alias{dposterior.bspec}
 \title{Prior, likelihood and posterior}
 \description{
-  Prior density, likelihood, and posterior density functions for the
-  posterior distributions specified through a \code{bspec} object.
+  Prior density, likelihood, posterior density, and marginal likelihood
+  functions for the posterior distributions specified through a
+  \code{bspec} object. 
 }
 \usage{
 dprior(x, ...)
 likelihood(x, ...)
+marglikelihood(x, ...)
 dposterior(x, ...)
 \method{dprior}{bspec}(x, theta, two.sided=x$two.sided, log=FALSE, ...)
 \method{likelihood}{bspec}(x, theta, two.sided=x$two.sided, log=FALSE, ...)
+\method{marglikelihood}{bspec}(x, log=FALSE, ...)
 \method{dposterior}{bspec}(x, theta, two.sided=x$two.sided, log=FALSE, ...)
 }
 \arguments{
@@ -37,11 +42,11 @@ dposterior(x, ...)
 \value{
   A \code{numeric} function value.
 }
-\references{Roever, C., Meyer, R., Christensen, N. (2008):
-  Modelling coloured noise.
-  Arxiv preprint 0804.3853 [stat.ME],
-  \url{http://arxiv.org/abs/0804.3853},
-  (\emph{submitted for publication}).}
+\references{Roever, C., Meyer, R., Christensen, N. (2011):
+  \href{http://dx.doi.org/10.1088/0264-9381/28/1/015010}{Modelling
+    coloured residual noise in gravitational-wave signal processing}.
+  Classical and Quantum Gravity, 28(1):015010.
+  See also \href{http://arxiv.org/abs/0804.3853}{arXiv preprint 0804.3853}.}
 \author{Christian Roever, \email{bspec@web.de}}
 \seealso{\code{\link[=bspec.default]{bspec}},
   \code{\link[=quantile.bspec]{quantile.bspec}},
@@ -57,8 +62,9 @@ plot(lhspec)
 lines(lhspec$freq, posteriorsample, type="b", col="red")
 
 # compute prior, likelihood, posterior:
-print(c("prior"     = dprior(lhspec, posteriorsample),
-        "likelihood"= likelihood(lhspec, posteriorsample),
-        "posterior" = dposterior(lhspec, posteriorsample)))
+print(c("prior"              = dprior(lhspec, posteriorsample),
+        "likelihood"         = likelihood(lhspec, posteriorsample),
+        "posterior"          = dposterior(lhspec, posteriorsample),
+        "marginal likelihood"= marglikelihood(lhspec)))
 }
 \keyword{ts}

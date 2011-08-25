@@ -8,10 +8,20 @@
 #
 # see also:
 #
-#   Roever, C., Meyer, R. and Christensen, N. (2010):
-#   Modelling coloured noise.
-#   Arxiv preprint 0804.3853
+#   Roever, C., Meyer, R. and Christensen, N. (2011):
+#   Modelling coloured residual noise in gravitational-wave signal processing.
+#   Classical and Quantum Gravity, 28(1):015010
+#   URL http://dx.doi.org/10.1088/0264-9381/28/1/015010
+#
+#   Arxiv preprint 0804.3853 [stat.ME]
 #   URL http://arxiv.org/abs/0804.3853
+#
+#
+# and:
+#
+#   Roever, C. (2011):
+#   A Student-t based filter for robust signal detection.
+#   Submitted for publication.
 #
 
 print.bspec <- function(x, ...)
@@ -274,7 +284,7 @@ plot.bspec <- function(x, two.sided=x$two.sided, ...)
                     two.sided=two.sided)
   plot(range(x$freq), range(quant),type="n", axes=FALSE,
        log="y", xlab="", ylab="", ...)
-  matlines(rbind(x$freq,x$freq),
+  matlines(rbind(x$freq,x$freq), pch=rep(NA,2),
            t(quant[,c(1,3)]), col="darkgrey", lty="solid")
   points(x$freq, quant[,2], pch=5)
   expect <- expectation(x, two.sided=two.sided)
@@ -543,6 +553,19 @@ likelihood.bspec <- function(x, theta,
 
 
 
+marglikelihood.bspec <- function(x, log=FALSE, ...)
+# (log-) likelihood
+{
+  #likeli <- -0.5*sum(x$datadf)*log(2*pi) + sum(-(x$datadf/2)*log(theta) - x$datassq/(2*theta))
+  likeli <- -sum(((x$priordf+x$datadf)/2) * log(1 + x$datassq/(x$priordf*x$scale)))
+  likeli <- likeli + sum(lgamma((x$priordf+x$datadf)/2) - lgamma(x$priordf/2) - (x$datadf/2)*(log(x$priordf)+log(pi)) - (x$datadf/2)*log(x$scale))
+  if (! log)
+    likeli <- exp(likeli)
+  return(likeli)
+}
+
+
+
 dposterior.bspec <- function(x, theta,
                              two.sided=x$two.sided, log=FALSE, ...)
 # (log-) posterior density
@@ -564,6 +587,537 @@ dposterior.bspec <- function(x, theta,
   if (!log)
     posterior <- exp(posterior)
   return(posterior)
+}
+
+
+
+matchedfilter <- function(data, signal,
+                          noisePSD,
+                          timerange=NA,
+                          reconstruct=TRUE,
+                          two.sided=FALSE)
+# This is algorithm II (Appendix A3e) from the Student-t filtering paper.
+{
+  # check 'data' properties:
+  stopifnot(is.ts(data) | is.vector(data))
+  if (!is.ts(data)) {
+    data <- as.ts(data)
+    warning("argument 'data' is not a time-series object; default conversion 'as.ts(data)' applied.")
+  }
+  N <- length(data)
+  FTlength <- (N %/% 2) + 1   # size of (nonredundant) FT output
+  Neven <- ((N %% 2) == 0)    # indicator for even N
+  deltat <- 1 / tsp(data)[3]
+  deltaf <- 1 / (N*deltat)
+  freq <- (0:(FTlength-1)) * deltaf
+  kappa <- c(1, rep(2,FTlength-2), ifelse(Neven,1,2))
+  nonredundant <- 1:FTlength
+  dataStart <- tsp(data)[1]
+  dataFT <- fft(as.vector(data))
+  if (any(is.na(timerange)))
+    timerange <- dataStart + c(0,N*deltat) + c(1,-1) * 0.1 * (N*deltat)
+  stopifnot(diff(timerange)>0, any((time(data)>=timerange[1]) & (time(data)<=timerange[2])))
+  
+  # check 'signal' properties:
+  stopifnot(((is.ts(signal)) && (tsp(signal)[3]==tsp(data)[3]))
+            | (is.vector(signal) && (length(signal)<=N))
+            | (is.matrix(signal) && (nrow(signal)<=N)))
+  if (is.ts(signal)) {
+    signalStart <- tsp(signal)[1]
+    if (is.mts(signal)) {
+      dn <- dimnames(signal)
+      k <- ncol(signal)
+      attributes(signal) <- NULL
+      signal <- matrix(signal, ncol=k, dimnames=dn)
+    }
+    else {
+      k <- 1
+      signal <- matrix(signal, ncol=k)
+    }
+  }
+  else {
+    signalStart <- 0.0
+    if (is.vector(signal)) {
+      k <- 1
+      signal <- matrix(signal, ncol=k)
+    }
+    else k <- ncol(signal)
+  }
+
+  if ((k > 1) && !isTRUE(all.equal(as.vector(cor(signal) - diag(k)), rep(0,k^2))))
+    warning("Please check: signal components (columns of 'signal' argument) need to be orthogonal.")
+  
+  stopifnot(signalStart > -N*deltat, signalStart <= 0)
+  # do zero-padding if necessary:
+  if (nrow(signal) < N)
+    signal <- rbind(signal, matrix(0, ncol=ncol(signal), nrow=N-nrow(signal)))
+
+  # check 'noisePSD' properties:
+  stopifnot(is.function(noisePSD) || (is.vector(noisePSD) && (length(noisePSD)==FTlength)))
+  if (is.function(noisePSD))
+    S1 <- noisePSD(freq)
+  else 
+    S1 <- noisePSD
+  if (two.sided)
+    S1 <- kappa * S1
+  stopifnot(all(S1 > 0.0)) # (?)
+  S1ext <- c(S1, rev(S1[kappa==2]))
+
+  # Fourier-transform signal basis waveforms:
+  signalFT <- mvfft(signal)
+  # (result is an (N x k) matrix).
+
+  # compute signal bases' norms:
+  normVec <- (deltat/N) * apply(signalFT, 2, function(x)sum(abs(x)^2/S1ext))
+  
+  # convolutions of signal waveforms with data:
+  convMat <- matrix(NA, nrow=N, ncol=k)
+  for (i in 1:k)
+    convMat[,i] <- dataFT * Conj(signalFT[,i]) / S1ext
+
+  # apply inverse FT:
+  FTMat <- Re(mvfft(convMat, inverse=TRUE))
+
+  # compute logarithmic profile likelihood:
+  maxLLR <- (deltat/N)^2 * (FTMat^2 %*% (1/normVec))
+
+  # vector of time points corresponding to filter output:
+  timevec <- dataStart-signalStart + (0:(N-1))*deltat
+  first <- timevec >= dataStart + N*deltat
+  timevec[first] <- timevec[first] - N*deltat
+  
+  # rearrange output to match input data:
+  oldindex <- 1:N
+  oldindex <- c(oldindex[first], oldindex[!first])
+  timevec <- timevec[oldindex]
+  maxLLR <- maxLLR[oldindex]
+  inRange <- (timevec>=timerange[1] & timevec<=timerange[2])
+  
+  imax <- which.max(maxLLR * inRange)
+  tHat <- timevec[imax]
+
+  if (reconstruct) {  # determine best-fitting signal:
+    betaHat <- (deltat/N) * as.vector(FTMat[oldindex[imax],]) / normVec
+    signalRec <- as.vector(signalFT %*% betaHat)
+    signalRec <- signalRec * exp(-2*pi*complex(re=0,im=1)*c(freq,rev(-freq[kappa==2])) * (tHat-dataStart+signalStart))
+    signalRec <- Re(fft(signalRec, inverse=TRUE))/N
+    signalRec <- ts(signalRec, start=dataStart, deltat=deltat)
+  }
+  else {
+    betaHat <- rep(NA,k)
+    signalRec <- NULL
+  }
+  
+  return(list("maxLLR"=maxLLR[imax],
+              "maxLLRseries"=ts(maxLLR, start=timevec[1], deltat=deltat),
+              "timerange"=timerange,
+              "betaHat"=betaHat,
+              "tHat"=tHat,
+              "reconstruction"=signalRec,
+              "call" = match.call(expand.dots=FALSE)))
+}
+
+
+
+studenttfilter <- function(data, signal,
+                           noisePSD, df=10,
+                           timerange=NA,
+                           deltamax = 1e-6,
+                           itermax = 100,
+                           reconstruct=TRUE,
+                           two.sided=FALSE)
+# This is algorithm IV (Appendix A3e) from the Student-t filtering paper.
+{
+  # check 'data' properties:
+  stopifnot(is.ts(data) | is.vector(data))
+  if (!is.ts(data)) {
+    data <- as.ts(data)
+    warning("argument 'data' is not a time-series object; default conversion 'as.ts(data)' applied.")
+  }
+  N <- length(data)
+  FTlength <- (N %/% 2) + 1   # size of (nonredundant) FT output
+  Neven <- ((N %% 2) == 0)    # indicator for even N
+  deltat <- 1 / tsp(data)[3]
+  deltaf <- 1 / (N*deltat)
+  freq <- (0:(FTlength-1)) * deltaf
+  kappa <- c(1, rep(2,FTlength-2), ifelse(Neven,1,2))
+  nonredundant <- 1:FTlength
+  dataStart <- tsp(data)[1]
+  dataFT <- fft(as.vector(data))
+  if (any(is.na(timerange)))
+    timerange <- dataStart + c(0,N*deltat) + c(1,-1) * 0.1 * (N*deltat)
+  stopifnot(diff(timerange)>0,
+            any((time(data)>=timerange[1]) & (time(data)<=timerange[2])))
+  
+  # check 'signal' properties:
+  stopifnot(((is.ts(signal)) && (tsp(signal)[3]==tsp(data)[3]))
+            | (is.vector(signal) && (length(signal)<=N))
+            | (is.matrix(signal) && (nrow(signal)<=N)))
+  if (is.ts(signal)) {
+    signalStart <- tsp(signal)[1]
+    if (is.mts(signal)) {
+      dn <- dimnames(signal)
+      k <- ncol(signal)
+      attributes(signal) <- NULL
+      signal <- matrix(signal, ncol=k, dimnames=dn)
+    }
+    else {
+      k <- 1
+      signal <- matrix(signal, ncol=k)
+    }
+  }
+  else {
+    signalStart <- 0.0
+    if (is.vector(signal)) {
+      k <- 1
+      signal <- matrix(signal, ncol=k)
+    }
+    else k <- ncol(signal)
+  }
+  stopifnot(signalStart > -N*deltat, signalStart <= 0)
+
+  if ((k > 1) && !isTRUE(all.equal(as.vector(cor(signal) - diag(k)), rep(0,k^2))))
+    warning(paste("Please check: signal components (columns of 'signal' argument) need to be orthogonal."))
+  
+  # do zero-padding if necessary:
+  if (nrow(signal) < N)
+    signal <- rbind(signal, matrix(0, ncol=ncol(signal), nrow=N-nrow(signal)))
+
+  # check 'noisePSD' properties:
+  stopifnot(is.function(noisePSD) || (is.vector(noisePSD) && (length(noisePSD)==FTlength)))
+  if (is.function(noisePSD))
+    S1 <- noisePSD(freq)
+  else 
+    S1 <- noisePSD
+  if (two.sided)
+    S1 <- kappa * S1
+  stopifnot(all(S1 > 0.0))
+  S1ext <- c(S1, rev(S1[kappa==2])) # ('extended' PSD vector)
+
+  # check 'df' properties:
+  stopifnot(is.function(df) || (is.vector(df) && (length(df)==FTlength | length(df)==1)))
+  if (is.function(df))
+    nu <- df(freq)
+  else {
+    if (length(df)==1)
+      nu <- rep(df, FTlength)
+    else
+      nu <- df
+  }
+  stopifnot(all(nu > 0.0))
+
+  stopifnot(itermax > 1, deltamax > 0)
+  
+  # Fourier-transform signal basis waveforms:
+  signalFT <- mvfft(signal)
+  # (result is an (N x k) matrix).
+  
+  # vector of time points / -shifts corresponding to filter output:
+  timevec <- dataStart-signalStart + (0:(N-1))*deltat
+  first <- timevec >= dataStart + N*deltat
+  timevec[first] <- timevec[first] - N*deltat  
+  inRange <- (timevec>=timerange[1] & timevec<=timerange[2])
+  
+  # compute (unnormalized) log-likelihood under "noise-only" model (H_0):
+  LL0 <- -sum(((nu+2)/2) * log(1 + (1/nu) * abs(dataFT[1:FTlength])^2 / ((N/(4*deltat)) * S1)))
+
+  EMprogress <- NULL
+  deltaLLR <- 1
+  LLRprev <- 0
+  S1adapted <- S1ext
+  EMiter <- 1
+  while ((deltaLLR > deltamax) & (EMiter <= itermax)) { # EM-iterations:
+    # compute signal bases' norms:
+    normVec <- (deltat/N) * apply(signalFT, 2, function(x)sum(abs(x)^2/S1adapted))
+
+    # convolutions of signal waveforms with data:
+    convMat <- matrix(NA, nrow=N, ncol=k)
+    for (i in 1:k)
+      convMat[,i] <- dataFT * Conj(signalFT[,i]) / S1adapted
+
+    # apply inverse FT:
+    FTMat <- Re(mvfft(convMat, inverse=TRUE))
+
+    # compute logarithmic profile likelihood:
+    maxLLR <- (deltat/N)^2 * (FTMat^2 %*% (1/normVec))
+
+    # determine ML (subject to time constraint):
+    imax <- which.max(maxLLR * inRange)
+    tHat <- timevec[imax]
+
+    # determine best-fitting signal:
+    betaHat <- (deltat/N) * as.vector(FTMat[imax,]) / normVec
+    signalRec <- as.vector(signalFT %*% betaHat)
+  
+    # determine (conditional) noise residuals:
+    dataFTshifted <- dataFT * exp(-2*pi*complex(re=0,im=1)*c(freq,rev(-freq[kappa==2])) * (-1) * (tHat-dataStart+signalStart))
+    residual2 <- abs(dataFTshifted[1:FTlength] - signalRec[1:FTlength])^2
+
+    # compute log-likelihood under "signal" model (H_1):
+    LL1 <- -sum(((nu+2)/2) * log(1 + (1/nu) * residual2 / ((N/(4*deltat)) * S1)))
+    LLR <- LL1 - LL0
+    deltaLLR <- LLR - LLRprev
+    LLRprev <- LLR
+
+    # keep track of EM-algorithm's progress:
+    EMprogress <- rbind(EMprogress,
+                        c("iteration"=EMiter, "LLR"=LLR))
+    
+    # adapt the PSD:
+    S1adapted <- (nu/(nu+2)) * S1 + (2/(nu+2)) * (2*deltat/N) * residual2
+    S1adapted <- c(S1adapted, rev(S1adapted[kappa==2]))
+
+    EMiter <- EMiter + 1
+  }
+
+  if (reconstruct) {
+    # time-shift the reconstructed signal, convert to time-domain:
+    signalRec <- signalRec * exp(-2*pi*complex(re=0,im=1)*c(freq,rev(-freq[kappa==2])) * (tHat-dataStart+signalStart))
+    signalRec <- Re(fft(signalRec, inverse=TRUE))/N
+    signalRec <- ts(signalRec, start=dataStart, deltat=deltat)
+  }
+  else
+    signalRec <- NULL
+  
+  return(list("maxLLR"=LLR,
+              "timerange"=timerange,
+              "betaHat"=betaHat,
+              "tHat"=tHat,
+              "reconstruction"=signalRec,
+              "EMprogress"=EMprogress,
+              "call" = match.call(expand.dots=FALSE)))
+}
+
+
+
+empiricalSpectrum <- function(x, two.sided=FALSE)
+# returns the (by default one-sided) "empirical" spectrum of a time series
+# (spectral power based on Fourier transform)
+{
+  if (!is.ts(x)) {
+    x <- as.ts(x)
+    warning("argument 'x' is not a time-series object, default conversion 'as.ts(x)' applied.")
+  }
+  N <- length(x)
+  FTlength <- (N %/% 2) + 1   # size of (nonredundant) FT output
+  Neven <- ((N %% 2) == 0)    # indicator for even N
+  deltat <- 1 / tsp(x)[3]
+  deltaf <- 1 / (N*deltat)
+  freq <- (0:(FTlength-1)) * deltaf
+  kappa <- c(1, rep(2,FTlength-2), ifelse(Neven,1,2))
+  # Fourier transform:
+  xFFT <- fft(as.vector(x))
+  # (`fft()' yields unnormalised FT)
+  nonredundant <- 1:FTlength
+  spec <- kappa * (deltat/N) * abs(xFFT[nonredundant])^2
+  if (two.sided) spec <- spec / kappa
+  result <- list("frequency"=freq,
+                 "power"=spec,
+                 "kappa"=kappa,
+                 "two.sided"=two.sided)
+  return(result)
+}
+
+
+
+snr <- function(x, psd, two.sided=FALSE)
+# signal-to-noise ratio (SNR) 
+{
+  if (!is.ts(x)) {
+    x <- as.ts(x)
+    warning("argument 'x' is not a time-series object, default conversion 'as.ts(x)' applied.")
+  }
+  N <- length(x)
+  FTlength <- (N %/% 2) + 1   # size of (nonredundant) FT output
+  stopifnot(is.function(psd) || (is.vector(psd) && (length(psd)==FTlength)))
+  Neven <- ((N %% 2) == 0)    # indicator for even N
+  deltaT <- 1 / tsp(x)[3]
+  deltaF <- 1 / (N*deltaT)
+  freq <- (0:(FTlength-1)) * deltaF
+  kappa <- c(1, rep(2,FTlength-2), ifelse(Neven,1,2))
+  nonredundant <- 1:FTlength
+  # determine spectral density:
+  if (is.function(psd)) spec <- psd(freq)
+  else spec <- psd
+  # re-scale to 1-sided (if given as 2-sided):
+  if (two.sided) spec <- kappa * spec
+  # determine standard deviations in Gaussian (Whittle) model:
+  sigma <- sqrt( (N/deltaT) * (spec/(kappa^2)) )
+  # do signal FT:
+  xFT <- fft(as.vector(x))
+  rho <- sqrt(sum((Re(xFT[nonredundant])/sigma)^2) + sum((Im(xFT[nonredundant])/sigma)^2))
+  return(rho)
+}
+
+
+
+welchPSD <- function(x, seglength,
+                     two.sided=FALSE,
+                     windowfun=tukeywindow,
+                     method=c("mean","median"),
+                     windowingPsdCorrection=TRUE,...)
+# Spectrum estimation by averaging over overlapping, windowed data segments
+# following
+#   Welch, P. D. (1967): "The use of Fast Fourier Transform
+#   for the estimation of power spectra..."
+#   http://dx.doi.org/10.1109/TAU.1967.1161901
+# (always using 50% overlap for now)
+#
+# Arguments:
+#   x         :  a time series object
+#   seglength :  the length of overlapping segments (in time units)
+#   two.sided :  logical flag indicating whether 2-sided (insted of 1-sided) is desired
+#   windowfun :  a windowing function
+#   windowingPsdCorrection: flag indicating whether to correct (re-scale) PSD estimate for windowing effect
+#   ...       :  additional arguments to the windowing function
+{
+  if (!is.ts(x)) {
+    x <- as.ts(x)
+    warning("argument 'x' is not a time-series object, default conversion 'as.ts(x)' applied.")
+  }
+  N <- length(x)       # total number of samples
+  tspx <- tsp(x)       # properties of time series x
+  deltaT <- deltat(x)  # sampling cadence (=1/rate)
+  if (seglength > diff(tspx[1:2])) {
+    warning("length of 'x' is less than requested segment length!")
+    return()
+  }
+  L <- floor(seglength/deltaT)  # number of samples in each segment
+  if (L %% 2 != 0) L <- L-1     # make sure L is even
+  if (L < 4) {
+    warning("requested segment length leaves less than 4 samples per segment!")
+    return()
+  }
+  win <- windowfun(L, ...)
+  if (windowingPsdCorrection) {
+    winRms <- sqrt(mean(win^2)) # windowing root-mean-square
+    win <- win / winRms
+  }
+  K <- N %/% (L/2) - 1 # number of overlapping segments
+  specMat <- matrix(NA, nrow=L/2+1, ncol=K)
+  for (i in 1:K) {     # loop over segments:
+    segment <- ts(x[((i-1)*(L/2)+1):((i-1)*(L/2)+L)],
+                  start=0, deltat=deltaT)
+    espec <- empiricalSpectrum(segment*win, two.sided=two.sided)
+    specMat[,i] <- espec$power
+  }
+  # each column of 'specMat' now holds an "empirical" spectrum
+  # of one of the K segments.
+  # Compute average:
+  method <- match.arg(method)
+  if (method=="mean")
+    spec <- rowMeans(specMat)
+  else if (method=="median") {
+    medianCorrection <- rep(2.0 / qchisq(0.5,df=2), L/2+1)
+    medianCorrection[espec$kappa==1] <- 1.0 / qchisq(0.5,df=1)
+    spec <- apply(specMat,1,median) * medianCorrection
+  }
+  
+  result <- list("frequency"=espec$frequency,
+                 "power"=spec,
+                 "kappa"=espec$kappa,
+                 "two.sided"=two.sided,
+                 "segments"=K)
+}
+
+
+
+tukeywindow <- function(N, r=0.1)
+# a.k.a. "cosine tapered" or "split cosine bell window."
+# (r is the fraction of the window
+#  in which it behaves sinusoidally;
+#  (1-r) is the `flat' fraction.)
+{
+  stopifnot(length(N)==1, N==round(N), is.finite(N), N>0, r>=0, r<=1)
+  r2 <- r/2
+  result <- rep(1, N)
+  i <- (0:(N-1))
+  if (r>0) {
+    leftTail  <- (i <= r2*N)
+    rightTail <- (i >= (1-r2)*N)
+    result[leftTail]  <- 0.5*(1-cos(pi*(i[leftTail]/(r2*N))))
+    result[rightTail] <-  0.5*(1-cos(pi*((N-i[rightTail])/(r2*N))))
+  }
+  return(result)
+}
+
+
+
+squarewindow <- function(N)
+# a.k.a. "rectangular" or "boxcar window".
+{
+  stopifnot(length(N)==1, N==round(N), is.finite(N), N>0)
+  return(rep(1.0, N))
+}
+
+
+
+hannwindow <- function(N)
+# cosine shape; zero derivative at both ends.
+# same as cosinewindow(N, a=2).
+# same as tukeywindow(N, r=1).
+{
+  stopifnot(length(N)==1, N==round(N), is.finite(N), N>0)
+  i <- (0:(N-1))
+  result <- 0.5 * (1-cos((i/N) * 2*pi))
+  return(result)
+}
+
+
+
+welchwindow <- function(N)
+# Parabola shape.
+# a.k.a. "Riesz", "Bochner" or "Parzen window".
+{
+  stopifnot(length(N)==1, N==round(N), is.finite(N), N>0)
+  i <- (0:(N-1))
+  result <- 1 - ((i-N/2)/(N/2))^2
+  return(result)
+}
+
+
+
+trianglewindow <- function(N)
+# triangular shape
+# a.k.a. "Bartlett" or "Fejer window".
+{
+  stopifnot(length(N)==1, N==round(N), is.finite(N), N>0)
+  i <- (0:(N-1))
+  result <- 1 - abs((i-N/2)/(N/2))
+  return(result)
+}
+
+
+
+hammingwindow <- function(N, alpha=0.543478261)
+# non-zero offset at ends, but zero derivative.
+{
+  stopifnot(length(N)==1, N==round(N), is.finite(N), N>0, alpha>=0, alpha<=1)
+  i <- (0:(N-1))
+  result <- alpha - (1-alpha) * cos((i/N) * 2*pi)
+  return(result)
+}
+
+
+
+cosinewindow <- function(N, alpha=1)
+# sine shape; non-zero derivative at both ends (for alpha=1.0).
+{
+  stopifnot(length(N)==1, N==round(N), is.finite(N), N>0, alpha>0)
+  i <- (0:(N-1))
+  result <- sin((i/N) * pi)^alpha
+  return(result)
+}
+
+
+
+kaiserwindow <- function(N, alpha=3)
+# a.k.a. "Kaiser-Bessel window".
+{
+  stopifnot(length(N)==1, N==round(N), is.finite(N), N>0, is.finite(alpha), alpha>0)
+  i <- (0:(N-1))
+  result <- besselI(pi*alpha*sqrt(1-(2*i/N-1)^2), nu=0) / besselI(pi*alpha, nu=0)
+  return(result)
 }
 
 
@@ -680,4 +1234,10 @@ dposterior <- function(x, ...)
 likelihood <- function(x, ...)
 {
   UseMethod("likelihood")
+}
+
+
+marglikelihood <- function(x, ...)
+{
+  UseMethod("marglikelihood")
 }

@@ -30,11 +30,11 @@
   A \code{numeric} vector giving the expectations/variances
   corresponding to the frequencies or lags of the argument.
 }
-\references{Roever, C., Meyer, R., Christensen, N. (2008):
-  Modelling coloured noise.
-  Arxiv preprint 0804.3853 [stat.ME],
-  \url{http://arxiv.org/abs/0804.3853},
-  (\emph{submitted for publication}).}
+\references{Roever, C., Meyer, R., Christensen, N. (2011):
+  \href{http://dx.doi.org/10.1088/0264-9381/28/1/015010}{Modelling
+    coloured residual noise in gravitational-wave signal processing}.
+  Classical and Quantum Gravity, 28(1):015010.
+  See also \href{http://arxiv.org/abs/0804.3853}{arXiv preprint 0804.3853}.}
 \author{Christian Roever, \email{bspec@web.de}}
 \seealso{\code{\link[=bspec.default]{bspec}}, \code{\link[=acf.bspec]{acf.bspec}}}
 \examples{

@@ -19,11 +19,12 @@
   supplied \code{\link[=bspec.default]{bspec}} object, if present, and 1
   otherwise.
 }
-\references{Roever, C., Meyer, R., Christensen, N. (2008):
-  Modelling coloured noise.
-  Arxiv preprint 0804.3853 [stat.ME],
-  \url{http://arxiv.org/abs/0804.3853},
-  (\emph{submitted for publication}).}
+\references{Roever, C. (2007):
+  \href{http://hdl.handle.net/2292/2356}{Bayesian inference on
+    astrophysical binary inspirals based on gravitational-wave
+    measurements}.
+  PhD thesis, Department of Statistics, The University of Auckland,
+  New Zealand.}
 \author{Christian Roever, \email{bspec@web.de}}
 \seealso{\code{\link[=temper.bspec]{temper}},
   \code{\link[=bspec.default]{bspec}}}

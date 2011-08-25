@@ -46,11 +46,12 @@
   (see the help for the \code{\link[=bspec.default]{bspec}} function),
   but with an additional \code{temperature} element.
 }
-\references{Roever, C., Meyer, R., Christensen, N. (2008):
-  Modelling coloured noise.
-  Arxiv preprint 0804.3853 [stat.ME],
-  \url{http://arxiv.org/abs/0804.3853},
-  (\emph{submitted for publication}).}
+\references{Roever, C. (2007):
+  \href{http://hdl.handle.net/2292/2356}{Bayesian inference on
+    astrophysical binary inspirals based on gravitational-wave
+    measurements}.
+  PhD thesis, Department of Statistics, The University of Auckland,
+  New Zealand.}
 \author{Christian Roever, \email{bspec@web.de}}
 \note{Tempering with the \code{likelihood.only} flag set to \code{FALSE}
   only works as long as the \code{temperature} is less than
