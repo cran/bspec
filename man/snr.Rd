@@ -8,7 +8,7 @@
 snr(x, psd, two.sided = FALSE)
 }
 \arguments{
-  \item{x}{the signal waveform, a time series (\code{\link{ts}}) object.}
+  \item{x}{the signal waveform, a time series (\code{\link[stats:ts]{ts}}) object.}
   \item{psd}{the noise power spectral density. May be a vector of
     appropriate length (\code{length(x)/2+1}) or a function of frequency.}
   \item{two.sided}{a \code{logical} flag indicating whether the
@@ -31,9 +31,11 @@ snr(x, psd, two.sided = FALSE)
 \value{
   The SNR \eqn{\varrho}{rho}.
 }
-\references{Roever, C. (2011): A Student-t based filter for robust
-  signal detection. Submitted for publication;
-  \href{http://arxiv.org/abs/1109.0442}{arXiv preprint 1109.0442}.}
+\references{Roever, C. (2011):
+  \href{http://dx.doi.org/10.1103/PhysRevD.84.122004}{A Student-t based
+    filter for robust signal detection}.
+  \emph{Physical Review D}, 84(12):122004.
+  See also \href{http://arxiv.org/abs/1109.0442}{arXiv preprint 1109.0442}.}
 \author{Christian Roever, \email{bspec@web.de}}
 \seealso{\code{\link{matchedfilter}}, \code{\link{studenttfilter}}}
 \examples{

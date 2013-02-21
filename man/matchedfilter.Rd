@@ -19,10 +19,10 @@ studenttfilter(data, signal, noisePSD, df = 10, timerange = NA,
     reconstruct = TRUE, two.sided = FALSE) 
 }
 \arguments{
-  \item{data}{the data to be filtered, a time series (\code{\link{ts}}) object.}
+  \item{data}{the data to be filtered, a time series (\code{\link[stats:ts]{ts}}) object.}
   \item{signal}{the signal waveform to be filtered for. May be a vector,
-  a matrix, a time series (\code{\link{ts}}) or a multivariate time
-  series (\code{\link[=ts]{mts}}) object.}
+  a matrix, a time series (\code{\link[stats:ts]{ts}}) or a multivariate time
+  series (\code{\link[stats:ts]{mts}}) object.}
   \item{noisePSD}{the noise power spectral density. May be a vector of
     appropriate length (\code{length(data)/2+1}) or a function of frequency.}
   \item{df}{the number of degrees-of-freedom (\eqn{\nu_j}{nu[j]}) for
@@ -78,7 +78,7 @@ studenttfilter(data, signal, noisePSD, df = 10, timerange = NA,
   \item{betaHat}{the ML-estimated vector of coefficients.}
   \item{tHat}{the ML-estimated signal arrival time.}
   \item{reconstruction}{the ML-fitted signal (a time series
-    (\code{\link{ts}}) object).}
+    (\code{\link[stats:ts]{ts}}) object).}
   \item{call}{an object of class \code{call} giving the
     function call that generated the result.}
   elements only for the \code{matchedfilter()} function:
@@ -88,9 +88,11 @@ studenttfilter(data, signal, noisePSD, df = 10, timerange = NA,
   elements only for the \code{studenttfilter()} function:
   \item{EMprogress}{a \code{matrix} indicating the progress of the EM-fitting.}
 }
-\references{Roever, C. (2011): A Student-t based filter for robust
-  signal detection. Submitted for publication;
-  \href{http://arxiv.org/abs/1109.0442}{arXiv preprint 1109.0442}.
+\references{Roever, C. (2011):
+  \href{http://dx.doi.org/10.1103/PhysRevD.84.122004}{A Student-t based
+    filter for robust signal detection}.
+  \emph{Physical Review D}, 84(12):122004.
+  See also \href{http://arxiv.org/abs/1109.0442}{arXiv preprint 1109.0442}.
 
   Roever, C., Meyer, R., Christensen, N. (2011):
   \href{http://dx.doi.org/10.1088/0264-9381/28/1/015010}{Modelling

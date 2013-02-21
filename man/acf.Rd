@@ -79,7 +79,7 @@
 \seealso{\code{\link[=bspec.default]{bspec}},
   \code{\link[=expectation.bspecACF]{expectation}},
   \code{\link[=sample.bspec]{sample.bspec}},
-  \code{\link{acf}}
+  \code{\link[stats:acf]{acf}}
 }
 \examples{
 lhspec1 <- bspec(lh)

@@ -10,7 +10,7 @@ empiricalSpectrum(x, two.sided=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{a time series (\code{\link{ts}} object).}
+  \item{x}{a time series (\code{\link[stats:ts]{ts}} object).}
   \item{two.sided}{a \code{logical} flag indicating whether the output
     is supposed to correspond to the \emph{one-sided} (default) or
     \emph{two-sided} spectrum.}
@@ -19,7 +19,7 @@ empiricalSpectrum(x, two.sided=FALSE)
   Performs a Fourier transform, and then derives (based on the
   additional information on sampling rate etc. provided via the time
   series' attributes) the spectral power as a function of frequency.
-  The result is simpler (in a way) than the \code{\link{spectrum}()}
+  The result is simpler (in a way) than the \code{\link[stats:spectrum]{spectrum}()}
   function's output, see also the example below. What is returned is the
   real-valued frequency series
   \deqn{\kappa_j\frac{\Delta_t}{N}\bigl|\tilde{x}(f_j)\bigr|^2}{kappa[j]
@@ -53,8 +53,8 @@ empiricalSpectrum(x, two.sided=FALSE)
   \emph{Classical and Quantum Gravity}, 28(1):015010.
   See also \href{http://arxiv.org/abs/0804.3853}{arXiv preprint 0804.3853}.}
 \author{Christian Roever, \email{bspec@web.de}}
-\seealso{\code{\link{fft}},
-  \code{\link{spectrum}},
+\seealso{\code{\link[stats:fft]{fft}},
+  \code{\link[stats:spectrum]{spectrum}},
   \code{\link{tukeywindow}},
   \code{\link{welchPSD}}
 }

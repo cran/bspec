@@ -28,7 +28,7 @@
   If \code{probs} is of length 1, a vector is returned instead.
 }
 \author{Christian Roever, \email{bspec@web.de}}
-\seealso{\code{\link[=bspec.default]{bspec}}, \code{\link[stats]{quantile}}}
+\seealso{\code{\link[=bspec.default]{bspec}}, \code{\link[stats:quantile]{quantile}}}
 \examples{
 lhspec <- bspec(lh)
 

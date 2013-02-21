@@ -12,7 +12,7 @@ welchPSD(x, seglength, two.sided = FALSE, windowfun = tukeywindow,
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{a time series (\code{\link{ts}} object).}
+  \item{x}{a time series (\code{\link[stats:ts]{ts}} object).}
   \item{seglength}{the length of the subsegments to be used (in units of
     time relative to \code{x}).}
   \item{two.sided}{a \code{logical} flag indicating whether the result is
@@ -57,7 +57,7 @@ welchPSD(x, seglength, two.sided = FALSE, windowfun = tukeywindow,
 \author{Christian Roever, \email{bspec@web.de}}
 \seealso{\code{\link{empiricalSpectrum}},
   \code{\link{tukeywindow}},
-  \code{\link{spectrum}}
+  \code{\link[stats:spectrum]{spectrum}}
 }
 \examples{
 # load example data:

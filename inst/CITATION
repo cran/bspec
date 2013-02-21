@@ -1,11 +1,11 @@
 citEntry(entry  = "manual",
          title  = "bspec: Bayesian spectral inference",
          author = person(first="Christian", last="Roever", email="bspec@web.de"),
-         year   = 2011,
-         note   = "R package version 1.3",
-         textVersion=paste("Christian Roever (2011).",
+         year   = 2013,
+         note   = "R package version 1.4",
+         textVersion=paste("Christian Roever (2013).",
                            "bspec: Bayesian spectral inference.",
-                           "R package version 1.3.")
+                           "R package version 1.4.")
         )
 
 citEntry(entry = "article",

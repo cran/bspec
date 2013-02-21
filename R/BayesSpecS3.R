@@ -21,7 +21,11 @@
 #
 #   Roever, C. (2011):
 #   A Student-t based filter for robust signal detection.
-#   Submitted for publication.
+#   Physical Review D, 84(12):122004
+#   URL http://dx.doi.org/10.1103/PhysRevD.84.122004
+#
+#   Arxiv preprint 1109.0442 [physics.data-an]
+#   URL http://arxiv.org/abs/1109.0442
 #
 
 print.bspec <- function(x, ...)
@@ -305,7 +309,7 @@ plot.bspec <- function(x, two.sided=x$two.sided, ...)
   axlabel <- NULL
   for (i in 1:length(ticks))
     axlabel <- c(axlabel, eval(bquote(expression((.(ticks[i]))^2))))     
-  axis(4, at=ticks^2, label=axlabel)
+  axis(4, at=ticks^2, labels=axlabel)
   box()
   result <- list("freq"=x$freq,
                  "spectrum"=cbind("0.5 %"=quant[,1],
@@ -699,7 +703,7 @@ matchedfilter <- function(data, signal,
   if (reconstruct) {  # determine best-fitting signal:
     betaHat <- (deltat/N) * as.vector(FTMat[oldindex[imax],]) / normVec
     signalRec <- as.vector(signalFT %*% betaHat)
-    signalRec <- signalRec * exp(-2*pi*complex(re=0,im=1)*c(freq,rev(-freq[kappa==2])) * (tHat-dataStart+signalStart))
+    signalRec <- signalRec * exp(-2*pi*complex(real=0,imaginary=1)*c(freq,rev(-freq[kappa==2])) * (tHat-dataStart+signalStart))
     signalRec <- Re(fft(signalRec, inverse=TRUE))/N
     signalRec <- ts(signalRec, start=dataStart, deltat=deltat)
   }
@@ -850,7 +854,7 @@ studenttfilter <- function(data, signal,
     signalRec <- as.vector(signalFT %*% betaHat)
   
     # determine (conditional) noise residuals:
-    dataFTshifted <- dataFT * exp(-2*pi*complex(re=0,im=1)*c(freq,rev(-freq[kappa==2])) * (-1) * (tHat-dataStart+signalStart))
+    dataFTshifted <- dataFT * exp(-2*pi*complex(real=0,imaginary=1)*c(freq,rev(-freq[kappa==2])) * (-1) * (tHat-dataStart+signalStart))
     residual2 <- abs(dataFTshifted[1:FTlength] - signalRec[1:FTlength])^2
 
     # compute log-likelihood under "signal" model (H_1):
@@ -872,7 +876,7 @@ studenttfilter <- function(data, signal,
 
   if (reconstruct) {
     # time-shift the reconstructed signal, convert to time-domain:
-    signalRec <- signalRec * exp(-2*pi*complex(re=0,im=1)*c(freq,rev(-freq[kappa==2])) * (tHat-dataStart+signalStart))
+    signalRec <- signalRec * exp(-2*pi*complex(real=0,imaginary=1)*c(freq,rev(-freq[kappa==2])) * (tHat-dataStart+signalStart))
     signalRec <- Re(fft(signalRec, inverse=TRUE))/N
     signalRec <- ts(signalRec, start=dataStart, deltat=deltat)
   }

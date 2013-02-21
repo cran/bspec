@@ -17,8 +17,8 @@
 }
 \arguments{
   \item{x}{a time series object of the data to be analysed.
-    May be a univariate (\code{\link{ts}} object) or multivariate
-    (\code{\link[=ts]{mts}} object) time series.}
+    May be a univariate (\code{\link[stats:ts]{ts}} object) or multivariate
+    (\code{\link[stats:ts]{mts}} object) time series.}
   \item{priorscale}{\emph{either} a \code{numeric} vector giving the
     scale parameters of the spectrum's prior distribution; recycled if
     of length 1.
@@ -89,7 +89,7 @@
   \code{\link[=sample.bspec]{sample.bspec}},
   \code{\link[=ppsample.bspec]{ppsample}},
   \code{\link[=acf.bspec]{acf.bspec}},
-  \code{\link{spectrum}}
+  \code{\link[stats:spectrum]{spectrum}}
 }
 \examples{
 # determine spectrum's posterior distribution
