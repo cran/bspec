@@ -46,13 +46,13 @@
   (see the help for the \code{\link[=bspec.default]{bspec}} function),
   but with an additional \code{temperature} element.
 }
-\references{Roever, C. (2007):
+\references{Roever, C.
   \href{http://hdl.handle.net/2292/2356}{Bayesian inference on
     astrophysical binary inspirals based on gravitational-wave
     measurements}.
   PhD thesis, Department of Statistics, The University of Auckland,
-  New Zealand.}
-\author{Christian Roever, \email{bspec@web.de}}
+  New Zealand, 2007.}
+\author{Christian Roever, \email{christian.roever@med.uni-goettingen.de}}
 \note{Tempering with the \code{likelihood.only} flag set to \code{FALSE}
   only works as long as the \code{temperature} is less than
   \code{min((x$df+2)/2)}.

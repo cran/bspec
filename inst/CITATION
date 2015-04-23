@@ -1,19 +1,20 @@
 citEntry(entry  = "manual",
          title  = "bspec: Bayesian spectral inference",
-         author = person(first="Christian", last="Roever", email="bspec@web.de"),
-         year   = 2013,
+         author = person(given="Christian", family="Roever",
+                         email="christian.roever@med.uni-goettingen.de"),
+         year   = 2015,
          note   = "R package version 1.4",
-         textVersion=paste("Christian Roever (2013).",
+         textVersion=paste("Christian Roever (2015).",
                            "bspec: Bayesian spectral inference.",
-                           "R package version 1.4.")
+                           "R package version 1.5.")
         )
 
 citEntry(entry = "article",
          title = "Modelling coloured residual noise in gravitational-wave signal processing",
          author = personList(
-                    person(first="Christian", last="Roever", email="bspec@web.de"),
-                    person(first="Renate", last="Meyer"),
-                    person(first="Nelson", last="Christensen")),
+                    person(given="Christian", family="Roever", email="christian.roever@med.uni-goettingen.de"),
+                    person(given="Renate", family="Meyer"),
+                    person(given="Nelson", family="Christensen")),
          year   = 2011,
          journal= "Classical and Quantum Gravity",
          volume = 28,

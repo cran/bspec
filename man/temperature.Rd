@@ -19,13 +19,13 @@
   supplied \code{\link[=bspec.default]{bspec}} object, if present, and 1
   otherwise.
 }
-\references{Roever, C. (2007):
+\references{Roever, C.
   \href{http://hdl.handle.net/2292/2356}{Bayesian inference on
     astrophysical binary inspirals based on gravitational-wave
     measurements}.
   PhD thesis, Department of Statistics, The University of Auckland,
-  New Zealand.}
-\author{Christian Roever, \email{bspec@web.de}}
+  New Zealand, 2007.}
+\author{Christian Roever, \email{christian.roever@med.uni-goettingen.de}}
 \seealso{\code{\link[=temper.bspec]{temper}},
   \code{\link[=bspec.default]{bspec}}}
 \examples{

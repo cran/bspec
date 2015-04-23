@@ -31,12 +31,12 @@ snr(x, psd, two.sided = FALSE)
 \value{
   The SNR \eqn{\varrho}{rho}.
 }
-\references{Roever, C. (2011):
+\references{Roever, C.
   \href{http://dx.doi.org/10.1103/PhysRevD.84.122004}{A Student-t based
     filter for robust signal detection}.
-  \emph{Physical Review D}, 84(12):122004.
+  \emph{Physical Review D}, 84(12):122004, 2011.
   See also \href{http://arxiv.org/abs/1109.0442}{arXiv preprint 1109.0442}.}
-\author{Christian Roever, \email{bspec@web.de}}
+\author{Christian Roever, \email{christian.roever@med.uni-goettingen.de}}
 \seealso{\code{\link{matchedfilter}}, \code{\link{studenttfilter}}}
 \examples{
 # sample size and sampling resolution:

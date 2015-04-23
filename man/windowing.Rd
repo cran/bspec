@@ -38,16 +38,16 @@ kaiserwindow(N, alpha=3)
 \value{
   A vector (of length \code{N}) of windowing coefficients.
 }
-\references{Harris, F. J. (1978):
+\references{Harris, F. J.
   \href{http://dx.doi.org/10.1109/PROC.1978.10837}{On the use of windows
   for harmonic analysis with the discrete Fourier transform}.
-  \emph{Proceedings of the IEEE}, 66(1):51--83.
+  \emph{Proceedings of the IEEE}, 66(1):51--83, 1978.
 
   Press, W. H., Teukolsky, S. A., Vetterling, W. T., Flannery,
-  B. P. (1992): \emph{Numerical recipes in C}. Cambridge University
-  Press.
+  B. P. \emph{Numerical recipes in C}. Cambridge University
+  Press, 1992.
 }
-\author{Christian Roever, \email{bspec@web.de}}
+\author{Christian Roever, \email{christian.roever@med.uni-goettingen.de}}
 \seealso{\code{\link{welchPSD}}, \code{\link{empiricalSpectrum}}}
 \examples{
 # illustrate the different windows' shapes:

@@ -43,18 +43,18 @@ welchPSD(x, seglength, two.sided = FALSE, windowfun = tukeywindow,
     two-sidedness.}
   \item{segments}{the number of (overlapping) segments used.}
 }
-\references{Welch, P. D. (1967):
+\references{Welch, P. D.
   \href{http://dx.doi.org/10.1109/TAU.1967.1161901}{The use of Fast
   Fourier Transform for the estimation of Power Spectra:
   A method based on time averaging over short, modified
   periodograms}. \emph{IEEE Transactions on Audio and Electroacoustics},
-  AU-15(2):70--73.
+  AU-15(2):70--73, 1967.
 
   Press, W. H., Teukolsky, S. A., Vetterling, W. T., Flannery,
-  B. P. (1992): \emph{Numerical recipes in C}. Cambridge University
-  Press.
+  B. P. \emph{Numerical recipes in C}. Cambridge University
+  Press, 1992.
 }
-\author{Christian Roever, \email{bspec@web.de}}
+\author{Christian Roever, \email{christian.roever@med.uni-goettingen.de}}
 \seealso{\code{\link{empiricalSpectrum}},
   \code{\link{tukeywindow}},
   \code{\link[stats:spectrum]{spectrum}}

@@ -27,7 +27,7 @@ two.sided(x, ...)
   A \code{\link[=bspec.default]{bspec}} object
   (see the help for the \code{\link[=bspec.default]{bspec}} function).
 }
-\author{Christian Roever, \email{bspec@web.de}}
+\author{Christian Roever, \email{christian.roever@med.uni-goettingen.de}}
 \seealso{\code{\link[=bspec.default]{bspec}}}
 \examples{
 lhspec <- bspec(lh)

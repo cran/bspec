@@ -42,12 +42,12 @@ dposterior(x, ...)
 \value{
   A \code{numeric} function value.
 }
-\references{Roever, C., Meyer, R., Christensen, N. (2011):
+\references{Roever, C., Meyer, R., Christensen, N.
   \href{http://dx.doi.org/10.1088/0264-9381/28/1/015010}{Modelling
     coloured residual noise in gravitational-wave signal processing}.
-  Classical and Quantum Gravity, 28(1):015010.
+  Classical and Quantum Gravity, 28(1):015010, 2011.
   See also \href{http://arxiv.org/abs/0804.3853}{arXiv preprint 0804.3853}.}
-\author{Christian Roever, \email{bspec@web.de}}
+\author{Christian Roever, \email{christian.roever@med.uni-goettingen.de}}
 \seealso{\code{\link[=bspec.default]{bspec}},
   \code{\link[=quantile.bspec]{quantile.bspec}},
   \code{\link[=expectation.bspec]{expectation}}}

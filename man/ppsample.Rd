@@ -21,7 +21,7 @@ ppsample(x, ...)
   sampling rate and sample size) as the data the posterior distribution
   is based on.
 }
-\author{Christian Roever, \email{bspec@web.de}}
+\author{Christian Roever, \email{christian.roever@med.uni-goettingen.de}}
 \seealso{\code{\link[=bspec.default]{bspec}}, \code{\link[=sample.bspec]{sample.bspec}}}
 \examples{
 

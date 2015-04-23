@@ -27,7 +27,7 @@
   rows corresponding to the Fourier frequencies \code{x$freq}.
   If \code{probs} is of length 1, a vector is returned instead.
 }
-\author{Christian Roever, \email{bspec@web.de}}
+\author{Christian Roever, \email{christian.roever@med.uni-goettingen.de}}
 \seealso{\code{\link[=bspec.default]{bspec}}, \code{\link[stats:quantile]{quantile}}}
 \examples{
 lhspec <- bspec(lh)

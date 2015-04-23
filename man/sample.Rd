@@ -28,7 +28,7 @@
   of the spectral parameters, of the same length as and corresponding to
   the \code{$freq} element of the supplied \code{bspec} object.
 }
-\author{Christian Roever, \email{bspec@web.de}}
+\author{Christian Roever, \email{christian.roever@med.uni-goettingen.de}}
 \seealso{\code{\link[=bspec.default]{bspec}},
   \code{\link[=ppsample.bspec]{ppsample}}}
 \examples{
