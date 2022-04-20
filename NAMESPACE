@@ -35,3 +35,7 @@ S3method(temper, bspec)
 S3method(two.sided, bspec)
 S3method(variance, bspec)
 S3method(variance, bspecACF)
+
+importFrom("graphics",
+           "abline", "axTicks", "axis", "box", "matlines", "mtext", "par",
+           "points")

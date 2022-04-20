@@ -88,18 +88,17 @@ studenttfilter(data, signal, noisePSD, df = 10, timerange = NA,
   elements only for the \code{studenttfilter()} function:
   \item{EMprogress}{a \code{matrix} indicating the progress of the EM-fitting.}
 }
-\references{Roever, C..
-  \href{http://dx.doi.org/10.1103/PhysRevD.84.122004}{A Student-t based
-    filter for robust signal detection}.
-  \emph{Physical Review D}, 84(12):122004, 2011.
-  See also \href{http://arxiv.org/abs/1109.0442}{arXiv preprint 1109.0442}.
+\references{  Roever, C.
+  A Student-t based filter for robust signal detection.
+  \emph{Physical Review D}, \bold{84}(12):122004, 2011.
+  \doi{10.1103/PhysRevD.84.122004}.
+  See also \href{https://arxiv.org/abs/1109.0442}{arXiv preprint 1109.0442}.
 
   Roever, C., Meyer, R., Christensen, N.
-  \href{http://dx.doi.org/10.1088/0264-9381/28/1/015010}{Modelling
-    coloured residual noise in gravitational-wave signal processing}.
-  \emph{Classical and Quantum Gravity}, 28(1):015010, 2011.
-  See also \href{http://arxiv.org/abs/0804.3853}{arXiv preprint
-    0804.3853}.}
+  Modelling coloured residual noise in gravitational-wave signal processing.
+  \emph{Classical and Quantum Gravity}, \bold{28}(1):015010, 2011.
+  \doi{10.1088/0264-9381/28/1/015010}.
+  See also \href{https://arxiv.org/abs/0804.3853}{arXiv preprint 0804.3853}.}
 \author{Christian Roever, \email{christian.roever@med.uni-goettingen.de}}
 \examples{
 # sample size and sampling resolution:

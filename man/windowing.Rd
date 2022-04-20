@@ -39,9 +39,10 @@ kaiserwindow(N, alpha=3)
   A vector (of length \code{N}) of windowing coefficients.
 }
 \references{Harris, F. J.
-  \href{http://dx.doi.org/10.1109/PROC.1978.10837}{On the use of windows
-  for harmonic analysis with the discrete Fourier transform}.
-  \emph{Proceedings of the IEEE}, 66(1):51--83, 1978.
+  On the use of windows for harmonic analysis
+  with the discrete Fourier transform.
+  \emph{Proceedings of the IEEE}, \bold{66}(1):51--83, 1978.
+  \doi{10.1109/PROC.1978.10837}
 
   Press, W. H., Teukolsky, S. A., Vetterling, W. T., Flannery,
   B. P. \emph{Numerical recipes in C}. Cambridge University
